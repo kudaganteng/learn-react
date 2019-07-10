@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<style>
+    .incorrect{
+        color: red;
+    }
+</style>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        class Addition extends React.Component{
+            constructor(props){
+                super(props)
+                this.state = {
+                    num1: 1,
+                    num2: 1,
+                    score: 0,
+                    guess: 0,
+                    answer: "",
+                    incorrect: false
+                }
+            }
+
+            render(){
+                if(this.state.guess === 5){
+                    if(this.state.score === 5){
+                        return this.renderWin()
+                    }else{
+                        return this.renderLose()
+                    }
+                }
+                else{
+                    return this.renderProblem()
+                }
+            }
+
+            renderWin(){
+                return(
+                    <div>
+                        <h1>You Win</h1>
+                        <button onClick = {this.reset}>Play Again</button>
+                    </div>
+                )
+            }
+
+            renderLose(){
+                return(
+                    <div>
+                        <h1>You Lose</h1>
+                        <h2>You guess {this.state.guess} times</h2>
+                        <button onClick = {this.reset}>Play Again</button>
+                    </div>
+                )
+            }
+
+            renderProblem(){
+                return(
+                    <div>
+                        <h1 className = {this.state.incorrect ? "incorrect" : ""}>{this.state.num1}+{this.state.num2}</h1>
+                        <input onKeyPress={this.keyPressed} onChange={this.inputChange} type="text" value={this.state.answer}/>
+                        <h3>Score: {this.state.score}</h3>
+                    </div>
+                )
+            }
+
+            inputChange = event =>{
+                this.setState({
+                    answer: event.target.value
+                })
+            }
+
+            keyPressed = event2 =>{
+                if(event2.key === "Enter"){
+                    let answerInt = parseInt(this.state.answer)
+                    if (answerInt === this.state.num1 + this.state.num2) {
+                        this.setState(state => ({
+                            guess: state.guess + 1,
+                            score: state.score + 1,
+                            num1: Math.ceil(Math.random() * 10),
+                            num2: Math.ceil(Math.random() * 10),
+                            answer: "",
+                            incorrect: false
+                        }))
+                    }
+                    else{
+                        this.setState(state=>({
+                            guess: state.guess + 1,
+                            answer: "",
+                            incorrect: true
+                        }))
+                    }
+                }
+            }
+
+            reset = () =>{
+                this.setState({
+                    num1: 1,
+                    num2: 1,
+                    score: 0,
+                    answer: "",
+                    guess: 0
+                })
+            }
+        }
+
+        class App extends React.Component{
+            render(){
+                return(
+                    <div>
+                        <Addition />
+                    </div>
+                );
+            }
+        }
+        ReactDOM.render(<App />, document.querySelector('#root'))
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<style>
+    .incorrect{
+        color: red;
+    }
+</style>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        class Todo extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {
+                    Todo: [],
+                    input: ""
+                }
+            }
+
+            render(){
+               return (<div>
+                    <ul>
+                        {this.state.Todo.map((task,i) => 
+                            <li key={i} onClick={this.removeTodo} data-index={i}>{task}</li>
+                        )}
+                    </ul>
+                    <input type="text" value={this.state.input} onChange={this.inputValue} onKeyPress={this.addTodo}/>
+                </div>
+               )
+            }
+
+            inputValue = event =>{
+                this.setState({
+                    input: event.target.value
+                })
+            }
+
+            addTodo = event =>{
+                if(event.key === "Enter"){
+                    let inputTodo = this.state.input
+                    this.setState(state =>({
+                        Todo: [...state.Todo, inputTodo],
+                        input: ""
+                    }))
+                }
+            }
+
+            removeTodo = event => {
+                const index = event.target.dataset.index
+                const newList = [...this.state.Todo]
+                newList.splice(index, 1)
+                this.setState({
+                        Todo: newList
+                })
+            }
+
+
+        }
+
+        class App extends React.Component{
+            render(){
+                return(
+                    <div>
+                        <Todo />
+                    </div>
+                );
+            }
+        }
+        ReactDOM.render(<App />, document.querySelector('#root'))
+    </script>
+</body>
+
+</html>
